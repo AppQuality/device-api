@@ -1,10 +1,14 @@
+import dotenv from "dotenv";
 import express from "express";
 import Devices from "./features/getDevices";
+import apikey from "./middleware/apikey";
+
+dotenv.config();
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
-app.get("/", async (req, res) => {
+app.get("/", apikey, async (req, res) => {
   const obj = new Devices();
   await obj.init();
   const devices = await obj.getDevices();
