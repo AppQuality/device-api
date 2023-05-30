@@ -1,16 +1,26 @@
 {
+  "ts-node": {
+    "files": true
+  },
+  "files": ["src/index.ts"],
   "compilerOptions": {
-    "module": "commonjs",
+    "inlineSourceMap": true,
+    "target": "es5",
+    "outDir": "./dist",
+    "downlevelIteration": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "target": "es6",
-    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
     "baseUrl": ".",
+    "noErrorTruncation": true,
     "paths": {
-      "*": ["node_modules/*"]
+      "@src/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }
