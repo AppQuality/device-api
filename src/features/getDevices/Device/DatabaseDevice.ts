@@ -22,8 +22,8 @@ class DatabaseDevice extends Device {
       manufacturer,
       model,
       os: osName ?? "Other",
-      displayWidth: displayWidth,
-      displayHeight: displayHeight,
+      displayWidth,
+      displayHeight,
     });
   }
 }
