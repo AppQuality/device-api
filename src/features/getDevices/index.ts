@@ -1,15 +1,15 @@
-import fs from "fs";
-
-import xml2js from "xml2js";
 import { tryber } from "../database";
+import phoneArenaAPI from "../phonearenaApi";
 import { DatabaseDevice } from "./Device/DatabaseDevice";
 import { PhoneArenaDevice } from "./Device/PhoneArenaDevice";
-import { iDevice, XmlDevice } from "./types";
+import { iDevice } from "./types";
 
 class Devices {
   private ready: Promise<boolean>;
   private databaseDevices: iDevice[];
   private phoneArenaDevices: iDevice[];
+
+  private os: Record<string, number> = {};
 
   get newDevices() {
     return this.phoneArenaDevices.filter(
@@ -29,10 +29,19 @@ class Devices {
   }
 
   public async init() {
+    this.os = await this.getOs();
     this.databaseDevices = await this.getCurrentDevices();
     this.phoneArenaDevices = await this.getDevicesFromXml();
     this.ready = Promise.resolve(true);
     return true;
+  }
+
+  private async getOs() {
+    const os = await tryber.tables.WpAppqEvdPlatform.do().select("id", "name");
+    return os.reduce((acc, os) => {
+      acc[os.name] = os.id;
+      return acc;
+    }, {});
   }
 
   private async getCurrentDevices() {
@@ -61,17 +70,9 @@ class Devices {
   }
 
   private async getDevicesFromXml(page: number = 1): Promise<any[]> {
-    const xml = fs.readFileSync("./phonearena.xml", "utf8");
-    return new Promise((resolve, reject) => {
-      xml2js.parseString(xml, (err, result) => {
-        if (err) {
-          return reject(err);
-        }
-
-        const list: XmlDevice[] = result.phones.phone;
-        return resolve(list.map((device) => new PhoneArenaDevice(device)));
-      });
-    });
+    const list = await phoneArenaAPI();
+    const validOsNames = Object.keys(this.os);
+    return list.map((device) => new PhoneArenaDevice(device, validOsNames));
   }
 
   public async getDevices() {
@@ -83,6 +84,43 @@ class Devices {
       new: this.newDevices,
       changed: this.changedDevices,
     };
+  }
+
+  public async getQueries() {
+    const { new: newDevices, changed: changedDevices } =
+      await this.getDevices();
+
+    const newDevicesQueries = newDevices.map((device) => {
+      const osId = device.os in this.os ? this.os[device.os] : 0;
+      return tryber.tables.WpDcAppqDevices.do()
+        .insert({
+          source_id: device.id,
+          manufacturer: device.manufacturer,
+          model: device.model,
+          device_type: 0,
+          platform_id: osId,
+          display_width: device.display.width,
+          display_height: device.display.height,
+        })
+        .toQuery();
+    });
+    const changedDevicesQueries = changedDevices.map((device) => {
+      const osId = device.os in this.os ? this.os[device.os] : 0;
+      return tryber.tables.WpDcAppqDevices.do()
+        .update({
+          manufacturer: device.manufacturer,
+          model: device.model,
+          platform_id: osId,
+          display_width: device.display.width,
+          display_height: device.display.height,
+        })
+        .where({
+          source_id: device.id,
+        })
+        .toQuery();
+    });
+
+    return [...newDevicesQueries, ...changedDevicesQueries];
   }
 }
 

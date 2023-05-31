@@ -2,13 +2,14 @@ import { XmlDevice, XmlRow } from "../types";
 import { Device } from "./Device";
 
 class PhoneArenaDevice extends Device {
-  constructor(device: XmlDevice) {
+  constructor(device: XmlDevice, validOs: string[]) {
     const { os, display } = PhoneArenaDevice.extractProperties(device);
+
     super({
       id: Number(device.id[0]),
       manufacturer: device.manufacturer[0],
       model: device.model[0],
-      os,
+      os: validOs.includes(os) ? os : "Other",
       displayWidth: display.width || 0,
       displayHeight: display.height || 0,
     });
@@ -62,16 +63,16 @@ class PhoneArenaDevice extends Device {
       "Hardware & Performance"
     );
     if (!hardware) return "Other";
-
     const os = PhoneArenaDevice.findPropertyByName(
       hardware.property,
       "Smart_Phone"
     );
+
     if (!os) return "Other";
 
     const osValue = PhoneArenaDevice.findPropertyByName(os.property, "OS");
 
-    if (!osValue) return "Other";
+    if (!osValue || osValue.$.value === "") return "Other";
 
     return osValue.$.value;
   }
