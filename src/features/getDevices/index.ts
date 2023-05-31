@@ -92,17 +92,15 @@ class Devices {
 
     const newDevicesQueries = newDevices.map((device) => {
       const osId = device.os in this.os ? this.os[device.os] : 0;
-      return tryber.tables.WpDcAppqDevices.do()
-        .insert({
-          source_id: device.id,
-          manufacturer: device.manufacturer,
-          model: device.model,
-          device_type: 0,
-          platform_id: osId,
-          display_width: device.display.width,
-          display_height: device.display.height,
-        })
-        .toQuery();
+      return tryber.tables.WpDcAppqDevices.do().insert({
+        source_id: device.id,
+        manufacturer: device.manufacturer,
+        model: device.model,
+        device_type: 0,
+        platform_id: osId,
+        display_width: device.display.width,
+        display_height: device.display.height,
+      });
     });
     const changedDevicesQueries = changedDevices.map((device) => {
       const osId = device.os in this.os ? this.os[device.os] : 0;
@@ -116,11 +114,19 @@ class Devices {
         })
         .where({
           source_id: device.id,
-        })
-        .toQuery();
+        });
     });
 
     return [...newDevicesQueries, ...changedDevicesQueries];
+  }
+
+  public async getSql() {
+    return (await this.getQueries()).map((query) => query.toSQL()).join(";\n");
+  }
+
+  public async execute() {
+    const queries = await this.getQueries();
+    await Promise.all(queries);
   }
 }
 

@@ -18,8 +18,15 @@ app.get("/", apikey, async (req, res) => {
 app.get("/queries", apikey, async (req, res) => {
   const obj = new Devices();
   await obj.init();
-  const devices = await obj.getQueries();
-  res.send(devices.join(";\n"));
+  const devices = await obj.getSql();
+  res.send(devices);
+});
+
+app.get("/update", apikey, async (req, res) => {
+  const obj = new Devices();
+  await obj.init();
+  const devices = await obj.execute();
+  res.send(devices);
 });
 
 app.listen(port, () => {
