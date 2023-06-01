@@ -6,7 +6,7 @@
   "compilerOptions": {
     "inlineSourceMap": true,
     "target": "es5",
-    "outDir": "./dist",
+    "outDir": "./build",
     "downlevelIteration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

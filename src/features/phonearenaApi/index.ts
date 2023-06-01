@@ -24,8 +24,6 @@ class PhoneArena {
   private total = 0;
   private perPage = 100;
 
-  constructor() {}
-
   async init() {
     const response = await instance.get(
       `/api.php?key=${process.env.PHONEARENA_KEY}&limit=1`

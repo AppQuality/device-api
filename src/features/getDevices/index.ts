@@ -38,8 +38,8 @@ class Devices {
 
   private async getOs() {
     const os = await tryber.tables.WpAppqEvdPlatform.do().select("id", "name");
-    return os.reduce((acc, os) => {
-      acc[os.name] = os.id;
+    return os.reduce((acc, osItem) => {
+      acc[osItem.name] = osItem.id;
       return acc;
     }, {});
   }
