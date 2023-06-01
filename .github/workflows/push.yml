@@ -1,0 +1,38 @@
+name: Push image to ECR
+
+on:
+  push:
+    branches:
+        - "*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract branch name
+        shell: bash
+        run: |
+          BRANCH=$(echo ${{ github.ref_name }})
+          if [ "$BRANCH" = "master" ]; then
+              TAG="latest"
+          else
+              TAG="$BRANCH"
+          fi
+          echo "##[set-output name=tag;]$TAG"
+        id: extract_branch
+
+      - name: Docker ECR
+        uses: kciter/aws-ecr-action@v2
+        with:
+          access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+          region: eu-west-1
+          repo: device-updater
+          tags: ${{ steps.extract_branch.outputs.tag }}
+          extra_build_args: --build-arg NPM_TOKEN=${{ secrets.NPM_TOKEN }}
