@@ -1,17 +1,18 @@
 import dotenv from "dotenv";
 import Devices from "./features/getDevices";
+import sendToSlack from "./features/sendToSlack";
 
 dotenv.config();
 
 async function execute() {
-  console.log("Starting...");
+  sendToSlack("Starting...");
   const obj = new Devices();
-  console.log("Initializing devices...");
+  sendToSlack("Initializing devices...");
   await obj.init();
-  console.log("Initialized!");
-  console.log("Executing changes...");
+  sendToSlack("Initialized!");
+  sendToSlack("Executing changes...");
   await obj.execute();
-  console.log("Changes executed!");
+  sendToSlack("Changes executed!");
   process.exit(0);
 }
 execute();

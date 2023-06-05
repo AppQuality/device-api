@@ -1,5 +1,6 @@
 import { tryber } from "../database";
 import phoneArenaAPI from "../phonearenaApi";
+import sendToSlack from "../sendToSlack";
 import { DatabaseDevice } from "./Device/DatabaseDevice";
 import { PhoneArenaDevice } from "./Device/PhoneArenaDevice";
 import { iDevice } from "./types";
@@ -89,8 +90,8 @@ class Devices {
   public async getQueries() {
     const { new: newDevices, changed: changedDevices } =
       await this.getDevices();
-    console.log(`There are ${newDevices.length} new devices`);
-    console.log(`There are ${changedDevices.length} changed devices`);
+    sendToSlack(`There are ${newDevices.length} new devices`);
+    sendToSlack(`There are ${changedDevices.length} changed devices`);
 
     const newDevicesQueries = newDevices.map((device) => {
       const osId = device.os in this.os ? this.os[device.os] : 0;
@@ -128,7 +129,10 @@ class Devices {
 
   public async execute() {
     const queries = await this.getQueries();
-    console.log(`There are ${queries.length} queries to execute`);
+    sendToSlack(`There are ${queries.length} queries to execute`);
+    if (queries.length > 0) {
+      sendToSlack("```" + queries.join("\n") + "```");
+    }
     await Promise.all(queries);
   }
 }
