@@ -9,6 +9,7 @@ systemctl start docker.service
 aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 163482350712.dkr.ecr.eu-west-1.amazonaws.com
 
 # read docker image version from manifest
+APPLICATION_NAME=device-updater
 DOCKER_IMAGE=device-updater
 DOCKER_COMPOSE_FILE="/home/ec2-user/docker-compose.yml"
 INSTANCE_ID=$(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id)
