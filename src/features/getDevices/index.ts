@@ -129,9 +129,9 @@ class Devices {
 
   public async execute() {
     const queries = await this.getQueries();
-    sendToSlack(`There are ${queries.length} queries to execute`);
+    await sendToSlack(`There are ${queries.length} queries to execute`);
     if (queries.length > 0) {
-      sendToSlack("```" + queries.join("\n") + "```");
+      await sendToSlack("```" + queries.join("\n") + "```");
     }
     await Promise.all(queries);
   }
