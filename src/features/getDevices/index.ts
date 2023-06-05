@@ -89,6 +89,8 @@ class Devices {
   public async getQueries() {
     const { new: newDevices, changed: changedDevices } =
       await this.getDevices();
+    console.log(`There are ${newDevices.length} new devices`);
+    console.log(`There are ${changedDevices.length} changed devices`);
 
     const newDevicesQueries = newDevices.map((device) => {
       const osId = device.os in this.os ? this.os[device.os] : 0;
@@ -126,6 +128,7 @@ class Devices {
 
   public async execute() {
     const queries = await this.getQueries();
+    console.log(`There are ${queries.length} queries to execute`);
     await Promise.all(queries);
   }
 }
