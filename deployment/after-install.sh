@@ -61,6 +61,7 @@ services:
 
 " > $DOCKER_COMPOSE_FILE
 
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Starting import for '$ENVIRONMENT'"}' $SLACK_WEBHOOK
 
 docker-compose -f $DOCKER_COMPOSE_FILE up 
 docker-compose -f $DOCKER_COMPOSE_FILE down
