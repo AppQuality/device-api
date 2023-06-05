@@ -5,14 +5,14 @@ import sendToSlack from "./features/sendToSlack";
 dotenv.config();
 
 async function execute() {
-  sendToSlack("Starting...");
+  await sendToSlack("Starting...");
   const obj = new Devices();
-  sendToSlack("Initializing devices...");
+  await sendToSlack("Initializing devices...");
   await obj.init();
-  sendToSlack("Initialized!");
-  sendToSlack("Executing changes...");
+  await sendToSlack("Initialized!");
+  await sendToSlack("Executing changes...");
   await obj.execute();
-  sendToSlack("Changes executed!");
+  await sendToSlack("Changes executed!");
   process.exit(0);
 }
 execute();

@@ -90,8 +90,8 @@ class Devices {
   public async getQueries() {
     const { new: newDevices, changed: changedDevices } =
       await this.getDevices();
-    sendToSlack(`There are ${newDevices.length} new devices`);
-    sendToSlack(`There are ${changedDevices.length} changed devices`);
+    await sendToSlack(`There are ${newDevices.length} new devices`);
+    await sendToSlack(`There are ${changedDevices.length} changed devices`);
 
     const newDevicesQueries = newDevices.map((device) => {
       const osId = device.os in this.os ? this.os[device.os] : 0;
