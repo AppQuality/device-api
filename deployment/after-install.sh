@@ -1,6 +1,18 @@
 #!/bin/bash
 set -euo pipefail
 
+if [ ! $# -eq 1 ]; then
+    echo "Usage: $0 <environment>"
+    exit 1
+fi
+
+ENVIRONMENT="$1"
+
+if [ "$ENVIRONMENT" != "staging" ] && [ "$ENVIRONMENT" != "production" ]; then
+    echo "Invalid environment: $ENVIRONMENT"
+    exit 1
+fi
+
 # enable and start docker service
 systemctl enable docker.service
 systemctl start docker.service
@@ -13,7 +25,6 @@ APPLICATION_NAME=device-updater
 DOCKER_IMAGE=device-updater
 DOCKER_COMPOSE_FILE="/home/ec2-user/docker-compose.yml"
 INSTANCE_ID=$(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id)
-ENVIRONMENT=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=environment"  --output=text | cut -f5)
 
 # pull docker image from ecr
 docker pull 163482350712.dkr.ecr.eu-west-1.amazonaws.com/$DOCKER_IMAGE
