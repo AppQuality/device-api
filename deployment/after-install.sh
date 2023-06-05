@@ -57,11 +57,11 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       PHONEARENA_KEY: ${PHONEARENA_KEY}
-      SLACK_WEBHOOK: ${SLACK_WEBHOOK}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
 
 " > $DOCKER_COMPOSE_FILE
 
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Starting import for '$ENVIRONMENT'"}' $SLACK_WEBHOOK
+curl -X POST -H 'Content-type: application/json' --data '{"text":"Starting import for '$ENVIRONMENT'"}' $SLACK_WEBHOOK_URL
 
 docker-compose -f $DOCKER_COMPOSE_FILE up 
 docker-compose -f $DOCKER_COMPOSE_FILE down
