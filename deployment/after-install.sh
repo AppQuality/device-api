@@ -49,7 +49,6 @@ version: '3'
 services:
   app:
     image: 163482350712.dkr.ecr.eu-west-1.amazonaws.com/$DOCKER_IMAGE
-    restart: always
     environment:
       API_KEY: ${API_KEY}
       DB_HOST: ${DB_HOST}
@@ -62,4 +61,6 @@ services:
 " > $DOCKER_COMPOSE_FILE
 
 
-docker-compose -f $DOCKER_COMPOSE_FILE up -d
+docker-compose -f $DOCKER_COMPOSE_FILE up 
+docker-compose -f $DOCKER_COMPOSE_FILE down
+docker-compose -f $DOCKER_COMPOSE_FILE rm -f
