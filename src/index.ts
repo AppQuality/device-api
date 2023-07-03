@@ -8,10 +8,20 @@ async function execute() {
   await sendToSlack("Starting...");
   const obj = new Devices();
   await sendToSlack("Initializing devices...");
-  await obj.init();
+  try {
+    await obj.init();
+  } catch (e) {
+    await sendToSlack("Error initializing devices");
+    throw e;
+  }
   await sendToSlack("Initialized!");
   await sendToSlack("Executing changes...");
-  await obj.execute();
+  try {
+    await obj.execute();
+  } catch (e) {
+    await sendToSlack("Error executing changes");
+    throw e;
+  }
   await sendToSlack("Changes executed!");
   process.exit(0);
 }

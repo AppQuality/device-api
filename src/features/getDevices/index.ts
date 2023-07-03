@@ -32,7 +32,12 @@ class Devices {
   public async init() {
     this.os = await this.getOs();
     this.databaseDevices = await this.getCurrentDevices();
-    this.phoneArenaDevices = await this.getDevicesFromXml();
+    try {
+      this.phoneArenaDevices = await this.getDevicesFromXml();
+    } catch (e) {
+      await sendToSlack("Error getting devices from phonearena");
+      throw e;
+    }
     this.ready = Promise.resolve(true);
     return true;
   }
