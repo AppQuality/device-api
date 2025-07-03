@@ -90,6 +90,9 @@ class PhoneArenaDevice extends Device {
       resolution.property,
       "Display_Size"
     );
+
+    if(!size) return;
+    
     const width = PhoneArenaDevice.findPropertyByName(
       size.property,
       "Display_Width"
