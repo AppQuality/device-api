@@ -16,8 +16,6 @@ class PhoneArenaDevice extends Device {
   }
 
   private static extractProperties(device: XmlDevice) {
-    const connectivityFeatures = PhoneArenaDevice.extractConnectivity(device);
-    const designFeatures = PhoneArenaDevice.extractDesign(device);
     const os = PhoneArenaDevice.extractOs(device);
     const display = PhoneArenaDevice.extractDisplaySize(device);
     return { os, display };
@@ -27,35 +25,7 @@ class PhoneArenaDevice extends Device {
     return rows.find((property) => property.$.internal_name === name);
   }
 
-  private static extractConnectivity(device: XmlDevice): string[] {
-    const areas = device.properties[0].property;
 
-    const connectivity = PhoneArenaDevice.findPropertyByName(
-      areas,
-      "Connectivity & Features"
-    );
-    if (!connectivity) return [];
-    const other = PhoneArenaDevice.findPropertyByName(
-      connectivity.property,
-      "Connectivity_Other"
-    );
-    if (!other) return [];
-
-    return other.$.value.split(",").filter((feature) => feature.length > 0);
-  }
-
-  private static extractDesign(device: XmlDevice): string[] {
-    const areas = device.properties[0].property;
-    const design = PhoneArenaDevice.findPropertyByName(areas, "Design");
-    if (!design) return [];
-    const features = PhoneArenaDevice.findPropertyByName(
-      design.property,
-      "Biometrics"
-    );
-    if (!features) return [];
-
-    return features.$.value.split(",").filter((feature) => feature.length > 0);
-  }
   private static extractOs(device: XmlDevice) {
     const areas = device.properties[0].property;
     const hardware = PhoneArenaDevice.findPropertyByName(
