@@ -1,5 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import https from "https";
 import util from "util";
 import xml2js from "xml2js";
 import { XmlDevice } from "../getDevices/types";
@@ -18,6 +19,9 @@ const instance = process.env.TUNNEL
     })
   : axios.create({
       baseURL: "https://www.phonearena.com/",
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
     });
 
 class PhoneArena {
